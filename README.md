@@ -1,17 +1,11 @@
-# myapp
+# Flutter Todo 
+Project simple flutter todo with implement database hive  
+design : https://www.figma.com/community/file/1014170055491324465
+# Screenshot
+![enter image description here](https://github.com/aidensV/todo_flutter_hive/blob/main/screenshots/Screenshot_2021-09-25_15-57-07.png)
+![enter image description here](https://github.com/aidensV/todo_flutter_hive/blob/main/screenshots/Screenshot_2021-09-25_16-26-12.png)![enter image description here](https://github.com/aidensV/todo_flutter_hive/blob/main/screenshots/Screenshot_2021-09-25_16-26-47.png)![enter image description here](https://github.com/aidensV/todo_flutter_hive/blob/main/screenshots/Screenshot_2021-09-25_16-27-13.png)![enter image description here](https://github.com/aidensV/todo_flutter_hive/blob/main/screenshots/Screenshot_2021-09-25_16-27-54.png)
 
-A new Flutter project.
+## 
+.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# todo_flutter_hive
+https://flutter.dev/
