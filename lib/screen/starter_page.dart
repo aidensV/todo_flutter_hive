@@ -134,10 +134,11 @@ class _StarterPageState extends State<StarterPage> {
                                     var box =
                                         await Hive.openBox<Profile>('profile');
                                     box.add(profile);
-                                    Navigator.pushReplacement(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage()));
+                                            builder: (_) => HomePage()),
+                                        (r) => false);
                                   },
                                 ),
                               )
@@ -146,8 +147,10 @@ class _StarterPageState extends State<StarterPage> {
                         );
                       });
                 } else {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => HomePage()),
+                      (r) => false);
                 }
               },
               child: Padding(

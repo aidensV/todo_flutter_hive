@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:hive/hive.dart';
 import 'package:myapp/database/profile.dart';
 import 'package:myapp/database/todo.dart';
+import 'package:myapp/screen/starter_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -55,12 +56,48 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.only(top: 36),
               child: CircleAvatar(
                 radius: 30.0,
-                backgroundImage: NetworkImage(
-                    "https://cdn.pixabay.com/photo/2016/08/20/05/36/avatar-1606914_1280.png"),
+                backgroundImage: AssetImage("assets/images/header-profile.jpg"),
                 backgroundColor: Colors.transparent,
               ),
             ),
           ),
+          TextButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text(
+                          "Warning",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        content: Text("Are you sure?"),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Cancel")),
+                          ElevatedButton(
+                              onPressed: () async {
+                                final boxTodo =
+                                    await Hive.openBox<Todo>('todo');
+                                final boxProfile =
+                                    await Hive.openBox<Profile>('profile');
+                                boxTodo.deleteFromDisk();
+                                boxProfile.deleteFromDisk();
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => StarterPage()),
+                                    (r) => false);
+                              },
+                              child: Text("Yes"))
+                        ],
+                      );
+                    });
+              },
+              child: Text("Reset")),
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: Text(
@@ -83,59 +120,64 @@ class _HomePageState extends State<HomePage> {
             child: Divider(),
           ),
           Expanded(
-            child: ListView.builder(
-                itemCount: listtodos.length,
-                itemBuilder: (context, position) {
-                  Todo getTodo = listtodos[position];
-                  var title = getTodo.title;
-                  checkedValue = getTodo.isFinished;
-                  return CheckboxListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(110)),
-                    checkColor: Colors.white,
-                    activeColor: Colors.green,
+            child: listtodos.length < 1
+                ? Container(
+                    child: Image.asset("assets/images/no-task.png"),
+                  )
+                : ListView.builder(
+                    itemCount: listtodos.length,
+                    itemBuilder: (context, position) {
+                      Todo getTodo = listtodos[position];
+                      var title = getTodo.title;
+                      checkedValue = getTodo.isFinished;
+                      return CheckboxListTile(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(110)),
+                        checkColor: Colors.white,
+                        activeColor: Colors.green,
 
-                    selectedTileColor: Colors.green,
+                        selectedTileColor: Colors.green,
 
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "$title",
-                          style: TextStyle(
-                              decoration: checkedValue
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "$title",
+                              style: TextStyle(
+                                  decoration: checkedValue
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none),
+                            ),
+                            checkedValue
+                                ? IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () async {
+                                      var box =
+                                          await Hive.openBox<Todo>('todo');
+                                      box.deleteAt(position);
+                                      setState(() {
+                                        listtodos.removeAt(position);
+                                      });
+                                    },
+                                  )
+                                : Container()
+                          ],
                         ),
-                        checkedValue
-                            ? IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () async {
-                                  var box = await Hive.openBox<Todo>('todo');
-                                  box.deleteAt(position);
-                                  setState(() {
-                                    listtodos.removeAt(position);
-                                  });
-                                },
-                              )
-                            : Container()
-                      ],
-                    ),
-                    value: checkedValue,
-                    onChanged: (newValue) async {
-                      bool val = newValue!;
-                      Todo studentdata =
-                          new Todo(isFinished: val, title: title);
-                      var box = await Hive.openBox<Todo>('todo');
-                      box.putAt(position, studentdata);
-                      setState(() {
-                        getTodo.isFinished = newValue;
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity
-                        .leading, //  <-- leading Checkbox
-                  );
-                }),
+                        value: checkedValue,
+                        onChanged: (newValue) async {
+                          bool val = newValue!;
+                          Todo studentdata =
+                              new Todo(isFinished: val, title: title);
+                          var box = await Hive.openBox<Todo>('todo');
+                          box.putAt(position, studentdata);
+                          setState(() {
+                            getTodo.isFinished = newValue;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity
+                            .leading, //  <-- leading Checkbox
+                      );
+                    }),
           )
         ],
       ),
